@@ -46,12 +46,12 @@ struct bitr{
 struct bitr *Bitr_new(uint32_t num_bits);
 
 /*
- * Get the total number of bits the bit array can hold */
-uint32_t Bitr_size(const struct bitr *bitr);
+ * Deallocate bitr */
+void Bitr_destroy(struct bitr **bitr);
 
 /*
- * Deallocate bitr */
-void Bitr_destroy(struct bitr *bitr);
+ * Get the total number of bits the bit array can hold */
+uint32_t Bitr_size(const struct bitr *bitr);
 
 /*
  * Set bitr[n-1]. 
@@ -65,7 +65,14 @@ int Bitr_set(struct bitr *bitr, uint32_t n);
  * <-- return
  *     0 on success, -1 on failure (out of bounds).
  */
-int Bitr_unset(struct bitr *bitr, uint32_t n);
+int Bitr_clear(struct bitr *bitr, uint32_t n);
+
+/*
+ * Toggle bitr[n-1]. 
+ * <-- return
+ *     0 on success, -1 on failure (out of bounds).
+ */
+int Bitr_toggle(struct bitr *bitr, uint32_t n);
 
 /*
  * Get bitr[n-1]. 
@@ -73,7 +80,7 @@ int Bitr_unset(struct bitr *bitr, uint32_t n);
  *     -1 on failure (out of bounds), else 1 if bitr[n-1] 
  *     is turned on, else 0 if bitr[n-1] is turned off.
  */
-int Bitr_get(struct bitr *bitr, uint32_t n);
+int Bitr_test(struct bitr *bitr, uint32_t n);
 
 
 #endif
