@@ -9,16 +9,27 @@
 #define MSB 0x80u  /* decimal 128: the most significant bit in a byte, turned on */
 #define LSB 0x1u   /* least significant i.e. leftmost bit in a byte */
 
-
-
-struct bitr *Bitr_new(uint32_t num_bits){
+size_t get_required_bitr_size(uint32_t num_bits){
     size_t sz = sizeof(size_t);  /* first member */
     sz += num_bits / BITS_IN_BYTE;   /* variable array */
     sz += num_bits % 8 ? 1 : 0; /* if num_bits is not a multiple of 8, another byte is needed */
 
+    return sz;
+}
+
+struct bitr *Bitr_new(uint32_t num_bits, bool all_ones){
+    assert(num_bits > 0);
+    size_t sz = get_required_bitr_size(num_bits);
+
     struct bitr *new = calloc(1, sz);
     assert(new);
-    new->size = sz;
+    new->size = sz - sizeof(new->size); /* only the size of the variable array */
+
+    if (all_ones){
+        for(uint32_t i = 0; i < new->size; ++i){
+            new->bits[i] = 0xFFu;
+        }
+    }
 
     return new;
 }
@@ -34,11 +45,11 @@ uint32_t Bitr_size(const struct bitr *bitr){
     return bitr->size * BITS_IN_BYTE;
 }
 
-/* 
+/*
  * Return true if n < bytes*BITS_IN_BYTE, else false.
- * Specifiying n means we want to act on the value 
+ * Specifiying n means we want to act on the value
  * at index [n-1]. In an n-bit array, n-1 is therefore
- * the greatest index available and n is the greatest 
+ * the greatest index available and n is the greatest
  * allowable value for the param. */
 static inline int is_within_range(uint32_t bytes, uint32_t n){
     return (n > bytes * BITS_IN_BYTE) ? false : true;
@@ -46,7 +57,7 @@ static inline int is_within_range(uint32_t bytes, uint32_t n){
 
 int Bitr_set(struct bitr *bitr, uint32_t n){
     assert(bitr);
-    if (!is_within_range(bitr->size, n)) return -1; 
+    if (!is_within_range(bitr->size, n)) return -1;
 
     --n;  /* bit n goes into bitarray[n-1] */
     uint32_t byte = n / BITS_IN_BYTE;  /* the index of the byte in the actual array */
@@ -59,7 +70,7 @@ int Bitr_set(struct bitr *bitr, uint32_t n){
 
 int Bitr_clear(struct bitr *bitr, uint32_t n){
     assert(bitr);
-    if (!is_within_range(bitr->size, n)) return -1; 
+    if (!is_within_range(bitr->size, n)) return -1;
 
     --n;  /* bit n goes into bitarray[n-1] */
     uint32_t byte = n / BITS_IN_BYTE;  /* the index of the byte in the actual array */
@@ -72,7 +83,7 @@ int Bitr_clear(struct bitr *bitr, uint32_t n){
 
 int Bitr_toggle(struct bitr *bitr, uint32_t n){
     assert(bitr);
-    if (!is_within_range(bitr->size, n)) return -1; 
+    if (!is_within_range(bitr->size, n)) return -1;
 
     --n;  /* bit n goes into bitarray[n-1] */
     uint32_t byte = n / BITS_IN_BYTE;  /* the index of the byte in the actual array */
@@ -85,7 +96,7 @@ int Bitr_toggle(struct bitr *bitr, uint32_t n){
 
 int Bitr_test(struct bitr *bitr, uint32_t n){
     assert(bitr);
-    if (!is_within_range(bitr->size, n)) return -1; 
+    if (!is_within_range(bitr->size, n)) return -1;
 
     --n;  /* bit n goes into bitarray[n-1] */
     uint32_t byte = n / BITS_IN_BYTE;  /* the index of the byte in the actual array */

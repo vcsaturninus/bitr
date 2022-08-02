@@ -43,7 +43,7 @@ struct bitr{
 
 /* 
  * Allocate new bit array big enough to hold num_bits */
-struct bitr *Bitr_new(uint32_t num_bits);
+struct bitr *Bitr_new(uint32_t num_bits, bool all_ones);
 
 /*
  * Deallocate bitr */
