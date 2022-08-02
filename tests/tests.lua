@@ -42,10 +42,51 @@ function test_all_zeroes(num)
     return true
 end
 
+function test_set(n)
+    local b = bitr.new(n)
+    b:set(n)
+    if not b:test(n) then
+        return false
+    end
+
+    return true
+end
+
+function test_clear(n)
+    local b = bitr.new(n, true)
+    b:clear(n)
+    if b:test(n) then
+        return false
+    end
+
+    return true
+end
+
+-- state is the state to toggle FROM.
+-- e.g. if state is 1, toggle from 1 TO 0.
+function test_toggle(n, state)
+    local b = bitr.new(n, state and true or false)
+    b:toggle(n)
+    if state then
+        if b:test(n) then
+            return false
+        end
+    elseif not state then
+        if not b:test(n) then
+            return false
+        end
+    end
+
+    return true
+end
+
+
+
+
 
 print("################ Running Lua tests #################### ")
 
-print("\nValidating bit testing ")
+print("\nValidating bit testing...")
 run(test_all_ones, 101)
 run(test_all_ones, 33)
 run(test_all_ones, 10000)
@@ -56,6 +97,32 @@ run(test_all_zeroes, 33)
 run(test_all_zeroes, 10000)
 run(test_all_zeroes, 1)
 
+print("\nTesting bit setting...")
+run(test_set,5)
+run(test_set,55)
+run(test_set,555)
+run(test_set,5555)
+run(test_set,55555)
+run(test_set,1)
+run(test_set,91)
+
+print("\nTesting bit clearing...")
+run(test_set,2)
+run(test_set,55)
+run(test_set,2102)
+run(test_set,74)
+run(test_set,55555)
+run(test_set,1)
+run(test_set,93)
+
+print("\nTesting bit toggling...")
+run(test_toggle, 9, 1)
+run(test_toggle, 55, 0)
+run(test_toggle, 2102, 0)
+run(test_toggle, 74, 1)
+run(test_toggle, 55555, 0)
+run(test_toggle, 1,0)
+run(test_toggle, 93, 0)
 
 print(string.format("passed: %s / %s", num_passed, num_run))
 if (num_passed ~= num_run) then os.exit(1) end
