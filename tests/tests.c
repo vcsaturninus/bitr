@@ -124,6 +124,11 @@ static bool test_toggle_bit(uint32_t n, int state){
 }
 
 int main(int argc, char **argv){
+    puts("");
+    puts("#####################################################");
+    puts("################ Running C tests #################### ");
+    puts("#####################################################");
+
     printf("\n%s\n", "===== Validating initialization to all 1s ========= ");
     run(test_all_ones, 1111);
     run(test_all_ones, 1);

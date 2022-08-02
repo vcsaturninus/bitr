@@ -1,6 +1,6 @@
 #!/usr/bin/lua5.3
 
-package.cpath = package.cpath .. ";" .. "./luabitr?.so;"
+package.cpath = package.cpath .. ";./?.so" .. ";../out/?.so" .. ";./out/?.so"
 
 local bitr = require("luabitr")
 
@@ -82,9 +82,10 @@ end
 
 
 
-
-
+print("")
+print("#######################################################")
 print("################ Running Lua tests #################### ")
+print("#######################################################")
 
 print("\nValidating bit testing...")
 run(test_all_ones, 101)
