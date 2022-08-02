@@ -14,8 +14,18 @@
 /* defined in bitr.c */
 extern size_t get_required_bitr_size(uint32_t num_bits);
 
+/*
+ * Return bit array userdata big enough to hold n bits.
+ *
+ * --> n @lua
+ *     How many bits the bit array should be able to store.
+ *
+ * --> all_ones @lua @optional
+ *     If true, initialize the bit array with all bits set rather
+ *     than unset.
+ */
 int luabitr_new(lua_State *L){
-    lua_settop(L, 1);
+    lua_settop(L, 2);
     LUA_INTEGER num_bits = 0;
     int rc = 0;
 
@@ -25,10 +35,23 @@ int luabitr_new(lua_State *L){
         luaL_error(L, "invalid first argument, failed to convert to integer\n");
     }
 
+    bool all_ones = false;
+    if (lua_type(L, 2) != LUA_TNIL){
+        luaL_checktype(L, 2, LUA_TBOOLEAN);
+        all_ones = lua_toboolean(L, 2);
+    }
+
     size_t sz = get_required_bitr_size(num_bits);
     struct bitr *array = lua_newuserdata(L, sz);
     memset(array, 0, sizeof(struct bitr));
     array->size = sz- sizeof(array->size); /* only size of the array proper */
+
+    if (all_ones){
+        for (uint32_t i = 0; i < array->size; ++i){
+            array->bits[i] = 0xFFu;
+        }
+    }
+
     luaL_setmetatable(L, LUABITR_MT);
 
     return 1;

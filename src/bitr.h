@@ -3,7 +3,7 @@
 
  /* ------------------------------------------------------------------------------*
  | BSD 2-Clause License                                                           |
- |                                                                                | 
+ |                                                                                |
  | Copyright (c) 2022, vcsaturninus -- vcsaturninus@protonmail.com                |
  | All rights reserved.                                                           |
  |                                                                                |
@@ -34,15 +34,17 @@
 #include <stdlib.h>
 
 
-/* 
+/*
  * Bit array */
 struct bitr{
     size_t size;
     uint8_t bits[];
 };
 
-/* 
- * Allocate new bit array big enough to hold num_bits */
+/*
+ * Allocate new bit array big enough to hold num_bits;
+ * If all_ones=True, all bits in the new array will be
+ * initialized as 1s (set), otherwise as 0s (unset) */
 struct bitr *Bitr_new(uint32_t num_bits, bool all_ones);
 
 /*
@@ -54,30 +56,30 @@ void Bitr_destroy(struct bitr **bitr);
 uint32_t Bitr_size(const struct bitr *bitr);
 
 /*
- * Set bitr[n-1]. 
+ * Set bitr[n-1].
  * <-- return
  *     0 on success, -1 on failure (out of bounds).
  */
 int Bitr_set(struct bitr *bitr, uint32_t n);
 
 /*
- * Unset bitr[n-1]. 
+ * Unset bitr[n-1].
  * <-- return
  *     0 on success, -1 on failure (out of bounds).
  */
 int Bitr_clear(struct bitr *bitr, uint32_t n);
 
 /*
- * Toggle bitr[n-1]. 
+ * Toggle bitr[n-1].
  * <-- return
  *     0 on success, -1 on failure (out of bounds).
  */
 int Bitr_toggle(struct bitr *bitr, uint32_t n);
 
 /*
- * Get bitr[n-1]. 
+ * Get bitr[n-1].
  * <-- return
- *     -1 on failure (out of bounds), else 1 if bitr[n-1] 
+ *     -1 on failure (out of bounds), else 1 if bitr[n-1]
  *     is turned on, else 0 if bitr[n-1] is turned off.
  */
 int Bitr_test(struct bitr *bitr, uint32_t n);
