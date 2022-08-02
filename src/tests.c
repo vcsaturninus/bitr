@@ -23,7 +23,7 @@ enum{FAILED, PASSED};
 static bool test_test_bit(uint32_t n, int state){
     assert(state == 1 || state == 0);
 
-    struct bitr *new = Bitr_new(n);
+    struct bitr *new = Bitr_new(n, false);
     assert(new);
 
     bool res = PASSED;
@@ -36,16 +36,49 @@ static bool test_test_bit(uint32_t n, int state){
         new->bits[idx/8] |= (0x80u >> (idx % 8) );
     }
 
-    // printf("test returned %i\n", Bitr_test(new, n));
     if (Bitr_test(new, n) != state) res = FAILED;
-    // printf("bits[%i]=0x%02x\n", n/8, new->bits[idx/8]);
 
     free(new);
     return res;
 }
 
+/* test a bit array initialized to all 1s indeed
+ * has all bits set */
+static bool test_all_ones(uint32_t sz){
+    struct bitr *new = Bitr_new(sz, true);
+
+    bool res = PASSED;
+    for (uint32_t i = 0; i < Bitr_size(new); ++i){
+        if (Bitr_test(new, i+1) != 1){
+            res = FAILED;
+            break;
+        }
+    }
+
+    Bitr_destroy(&new);
+
+    return res;
+}
+
+/* test a bit array initialized to all 1s indeed
+ * has no bits set */
+static bool test_all_zeroes(uint32_t sz){
+    struct bitr *new = Bitr_new(sz, false);
+
+    bool res = PASSED;
+    for (uint32_t i = 0; i < new->size; ++i){
+        if (Bitr_test(new, i+1) != 0){
+            res = FAILED;
+            break;
+        }
+    }
+
+    Bitr_destroy(&new);
+    return res;
+}
+
 static bool test_set_bit(uint32_t n){
-    struct bitr *new = Bitr_new(n);
+    struct bitr *new = Bitr_new(n, false);
     assert(new);
 
     bool res = PASSED;
@@ -58,7 +91,7 @@ static bool test_set_bit(uint32_t n){
 }
 
 static bool test_clear_bit(uint32_t n){
-    struct bitr *new = Bitr_new(n);
+    struct bitr *new = Bitr_new(n, false);
     assert(new);
 
     bool res = PASSED;
@@ -71,7 +104,7 @@ static bool test_clear_bit(uint32_t n){
 }
 
 static bool test_toggle_bit(uint32_t n, int state){
-    struct bitr *new = Bitr_new(n);
+    struct bitr *new = Bitr_new(n, false);
     assert(new);
 
     assert(state == 1 || state == 0);
@@ -91,6 +124,17 @@ static bool test_toggle_bit(uint32_t n, int state){
 }
 
 int main(int argc, char **argv){
+    printf("\n%s\n", "===== Validating initialization to all 1s ========= ");
+    run(test_all_ones, 1111);
+    run(test_all_ones, 1);
+    run(test_all_ones, 3);
+    run(test_all_ones, 33);
+
+    printf("\n%s\n", "===== Validating initialization to all 0s ========= ");
+    run(test_all_zeroes, 2112);
+    run(test_all_zeroes, 1);
+    run(test_all_zeroes, 31);
+    run(test_all_zeroes, 133);
 
     printf("\n%s\n", "===== Validating bit testing ========= ");
     run(test_test_bit, 7, 1);
