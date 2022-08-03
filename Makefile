@@ -1,6 +1,6 @@
 CFLAGS:= -g -Wall -Wpedantic -std=c99 -Werror -O3
 C_LIB_FLAGS:= -fPIC -shared
-C_SRC:= src/bitr.c 
+C_SRC:= src/bitr.c
 LUA_SRC:= src/luabitr.c
 CPPFLAGS:=-Isrc
 
@@ -40,13 +40,13 @@ tests: compile run_ctests run_luatests
 run_ctests: build_clib build_ctests
 	@./$(OUT_DIR)/$(C_TESTS_OUT)
 
-run_luatests: build_lualib 
+run_luatests: build_lualib
 	@./$(TESTS_DIR)/$(LUA_TESTS)
 
-clean: 
+clean:
 	rm -rf $(OUT_DIR) $(VALGRIND_REPORT)
 
-grind: clean compile 
+grind: clean paths compile
 	valgrind --leak-check=full --show-leak-kinds=all \
         --track-origins=yes --verbose \
         --log-file=$(VALGRIND_REPORT) \
