@@ -51,7 +51,7 @@ For example, attempting to set bit 17 in a 10-bit array will return
 
 ### Lua library: `luabitr`
 
-The lua library usage is a almost a 1-to-1 of the C library.
+The lua library usage is almost a 1-to-1 of the C library.
 
 ```lua
 
@@ -89,7 +89,7 @@ unlike in C where an error code is returned. This is so because errors
 can be _caught_ in Lua (i.e. protected calls can be made) which is
 arguably clearer and more convenient then the return of an error code
 which is likely to be missed.
-More than the program crashing, C's problem is the likelihood of the
+More than the program crashing, C's problem is the likelihood of
 a crash not occuring but the memory being corrupted by out-of-bounds
 writes.
 
